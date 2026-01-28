@@ -83,7 +83,7 @@ local SaveManager = {} do
 			return false, 'no config file is selected'
 		end
 
-		local fullPath = self.Folder .. '/settings/' .. name .. '.json'
+		local fullPath = self.Folder .. '/Configs/' .. name .. '.json'
 
 		local data = {
 			objects = {}
