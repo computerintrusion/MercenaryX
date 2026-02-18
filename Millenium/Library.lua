@@ -1651,13 +1651,13 @@ local cloneref = cloneref or (function(...) return ... end)
             end 
             
             items[ "toggle" ].MouseButton1Click:Connect(function()
-                cfg.enabled = not cfg.enabled 
-                cfg.set(cfg.enabled)
+                cfg.default = not cfg.default 
+                cfg.set(cfg.default)
             end)
 
             items[ "toggle_button" ].MouseButton1Click:Connect(function()
-                cfg.enabled = not cfg.enabled 
-                cfg.set(cfg.enabled)
+                cfg.default = not cfg.default 
+                cfg.set(cfg.default)
             end)
             
             if cfg.seperator then
