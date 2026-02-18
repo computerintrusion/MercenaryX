@@ -1631,6 +1631,8 @@ local cloneref = cloneref or (function(...) return ... end)
             end;
             
             function cfg.set(bool)
+                cfg.enabled = bool 
+
                 if cfg.type == "checkbox" then 
                     library:tween(items[ "tick" ], {Rotation = bool and 0 or 45, ImageTransparency = bool and 0 or 1})
                     library:tween(items[ "toggle_button" ], {BackgroundColor3 = bool and themes.preset.accent or rgb(67, 67, 68)})
@@ -1651,13 +1653,13 @@ local cloneref = cloneref or (function(...) return ... end)
             end 
             
             items[ "toggle" ].MouseButton1Click:Connect(function()
-                cfg.default = not cfg.default 
-                cfg.set(cfg.default)
+                cfg.enabled = not cfg.enabled 
+                cfg.set(cfg.enabled)
             end)
 
             items[ "toggle_button" ].MouseButton1Click:Connect(function()
-                cfg.default = not cfg.default 
-                cfg.set(cfg.default)
+                cfg.enabled = not cfg.enabled 
+                cfg.set(cfg.enabled)
             end)
             
             if cfg.seperator then
