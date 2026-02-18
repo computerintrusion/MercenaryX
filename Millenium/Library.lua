@@ -2,6 +2,8 @@
     Milenium Library
 ]]
 
+local cloneref = cloneref or (function(...) return ... end)
+
 -- Variables 
     local uis = cloneref(game:GetService("UserInputService"))
     local players = cloneref(game:GetService("Players"))
@@ -92,15 +94,15 @@
     }
 
     local keys = {
-        [Enum.KeyCode.LeftShift] = "LS",
-        [Enum.KeyCode.RightShift] = "RS",
-        [Enum.KeyCode.LeftControl] = "LC",
-        [Enum.KeyCode.RightControl] = "RC",
-        [Enum.KeyCode.Insert] = "INS",
-        [Enum.KeyCode.Backspace] = "BS",
-        [Enum.KeyCode.Return] = "Ent",
-        [Enum.KeyCode.LeftAlt] = "LA",
-        [Enum.KeyCode.RightAlt] = "RA",
+        [Enum.KeyCode.LeftShift] = "LeftShift",
+        [Enum.KeyCode.RightShift] = "RightShift",
+        [Enum.KeyCode.LeftControl] = "LeftControl",
+        [Enum.KeyCode.RightControl] = "RightControl",
+        [Enum.KeyCode.Insert] = "Insert",
+        [Enum.KeyCode.Backspace] = "Backspace",
+        [Enum.KeyCode.Return] = "Return",
+        [Enum.KeyCode.LeftAlt] = "LeftAlt",
+        [Enum.KeyCode.RightAlt] = "RightAlt",
         [Enum.KeyCode.CapsLock] = "CAPS",
         [Enum.KeyCode.One] = "1",
         [Enum.KeyCode.Two] = "2",
@@ -112,16 +114,16 @@
         [Enum.KeyCode.Eight] = "8",
         [Enum.KeyCode.Nine] = "9",
         [Enum.KeyCode.Zero] = "0",
-        [Enum.KeyCode.KeypadOne] = "Num1",
-        [Enum.KeyCode.KeypadTwo] = "Num2",
-        [Enum.KeyCode.KeypadThree] = "Num3",
-        [Enum.KeyCode.KeypadFour] = "Num4",
-        [Enum.KeyCode.KeypadFive] = "Num5",
-        [Enum.KeyCode.KeypadSix] = "Num6",
-        [Enum.KeyCode.KeypadSeven] = "Num7",
-        [Enum.KeyCode.KeypadEight] = "Num8",
-        [Enum.KeyCode.KeypadNine] = "Num9",
-        [Enum.KeyCode.KeypadZero] = "Num0",
+        [Enum.KeyCode.KeypadOne] = "KeypadOne",
+        [Enum.KeyCode.KeypadTwo] = "KeypadTwo",
+        [Enum.KeyCode.KeypadThree] = "KeypadThree",
+        [Enum.KeyCode.KeypadFour] = "KeypadFour",
+        [Enum.KeyCode.KeypadFive] = "KeypadFive",
+        [Enum.KeyCode.KeypadSix] = "KeypadSix",
+        [Enum.KeyCode.KeypadSeven] = "KeypadSeven",
+        [Enum.KeyCode.KeypadEight] = "KeypadEight",
+        [Enum.KeyCode.KeypadNine] = "KeypadNine",
+        [Enum.KeyCode.KeypadZero] = "KeypadZero",
         [Enum.KeyCode.Minus] = "-",
         [Enum.KeyCode.Equals] = "=",
         [Enum.KeyCode.Tilde] = "~",
@@ -1658,7 +1660,7 @@
                 cfg.set(cfg.enabled)
             end)
             
-            if cfg.seperator then -- ok bro my lua either sucks or this was a pain in the ass to make (simple if statement aswell 💔)
+            if cfg.seperator then
                 library:create( "Frame" , {
                     AnchorPoint = vec2(0, 1);
                     Parent = self.items[ "elements" ];
@@ -1681,6 +1683,7 @@
             local cfg = {
                 name = options.name or nil,
                 suffix = options.suffix or "",
+                version = options.version or "",
                 flag = options.flag or library:next_flag(),
                 callback = options.callback or function() end, 
                 info = options.info or nil; 
@@ -2956,6 +2959,8 @@
 
                 hold_instances = {},
                 items = {};
+
+                seperator = options.seperator or options.Seperator or false;
             }
 
             flags[cfg.flag] = {
@@ -3107,7 +3112,7 @@
                         Parent = items[ "inline" ];
                         CornerRadius = dim(0, 4)
                     });
-                    
+
                     local options = {"Hold", "Toggle", "Always"}
                     
                     cfg.y_size = 20
@@ -3145,6 +3150,18 @@
 
                             cfg.open = false
                         end)
+                    end
+
+                    if cfg.seperator then
+                        library:create( "Frame" , {
+                            AnchorPoint = vec2(0, 1);
+                            Parent = self.items[ "elements" ];
+                            Position = dim2(0, 0, 1, 0);
+                            BorderColor3 = rgb(0, 0, 0);
+                            Size = dim2(1, 1, 0, 1);
+                            BorderSizePixel = 0;
+                            BackgroundColor3 = rgb(36, 36, 37)
+                        });
                     end
                 -- 
             end 
