@@ -1,3 +1,7 @@
 # Mercenary X (Mercenary Roblox)
 
-This repository contains only the public modules and libraries used by Merc-X.
+The official repository for Mercenary X
+
+```lua
+loadstring(game:HttpGet("https://github.com/computerintrusion/MercenaryX/raw/refs/heads/main/Games/Universal.lua"))()
+```
