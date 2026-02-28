@@ -1,1 +1,14 @@
-{}
+{ 
+    "enum": {
+        "signature":"18bcce77238727f4cfb7cbe0d4796ee57a460f6e367f3bc57b48a31574f689e6",
+        "file":"https://github.com/computerintrusion/MercenaryX/blob/6db88cd28982473dc6c5f99919f55e6ece40c448/Utilities/Modules/Enum.lua",
+    },
+    "signal": {
+        "signature":"345fef40c37b3e665b14199f2596660ff7aaac59efe9fa95bc2bd70b19092e3c",
+        "file":"https://github.com/computerintrusion/MercenaryX/blob/6db88cd28982473dc6c5f99919f55e6ece40c448/Utilities/Modules/Maid.lua",
+    },
+    "maid": {
+        "signature":"23b99d5f4603bf5d3c5e0535873cf3b4f87b977bd93e7b85bcf2fd01e9bc99a7",
+        "file":"https://github.com/computerintrusion/MercenaryX/blob/6db88cd28982473dc6c5f99919f55e6ece40c448/Utilities/Modules/Signal.lua",
+    }
+}
