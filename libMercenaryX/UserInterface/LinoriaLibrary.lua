@@ -4349,7 +4349,8 @@ function Library:CreateWindow(...)
 		Library:FireEvent("VisibilityChanged", _UI_IS_VISIBLE);
 		ModalElement.Modal = Toggled;
 
-		if Toggled then
+		local disabledMouseDrawing = true; -- i dont want custom mouse.
+		if not disabledMouseDrawing then
 			-- A bit scuffed, but if we're going from not toggled -> toggled we want to show the frame immediately so that the fade is visible.
 			Outer.Visible = true;
 			local guiservice = game:GetService("GuiService");
