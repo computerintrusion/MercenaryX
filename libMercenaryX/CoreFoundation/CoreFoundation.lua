@@ -17,7 +17,7 @@ function coreFoundation:safeConnection(event, callback)
     local function protectedCallback(...)
         local success, err = pcall(currentCallback, ...);
         if (not success) then
-            warn("[safeConnection] callback error:", err);
+            warn("[Mercenary X] [CoreFoundation->SafeConnection] callback error:", err);
         end
     end
 
