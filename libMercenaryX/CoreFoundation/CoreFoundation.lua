@@ -46,7 +46,7 @@ function coreFoundation:safeConnection(event, callback)
         isConnected = function()
             return connection and connection.Connected or false;
         end
-    }
+    };
 end
 
 return coreFoundation;
