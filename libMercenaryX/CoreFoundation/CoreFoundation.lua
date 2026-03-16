@@ -1,7 +1,7 @@
 local coreFoundation = {};
 
 do
-    local executor = identifyexecutor and identifyexecutor() or "unknown";
+    local executor = identifyexecutor and identifyexecutor() or "unknown executor";
     local messagebox = messageboxasync or messagebox;
     local request = request or http_request;
     local loadstring = loadstring;
@@ -49,12 +49,11 @@ do
 
         self:getService("Players").LocalPlayer:Kick(`[Mercenary X] {reason}`);
 
-        task.wait(9e9);
-        return;
+        return task.wait(9e9);
     end
     
     if (type(messagebox) ~= "function") then
-        return self:kickPlayer(`missing alias ( messagebox ) - unsupported executor [{executor}]`);
+        return coreFoundation:kickPlayer(`missing alias ( messagebox ) - unsupported executor [{executor}]`);
     end
 
     function coreFoundation:protectedMessagebox(body, title, id)
@@ -64,46 +63,40 @@ do
             return output;
         end
 
-        self:kickPlayer(`messagebox failed - {body}`);
-
-        return;
+        return self:kickPlayer(`messagebox failed - {body}`);
     end
 
     if (type(loadstring) ~= "function") then
-        return protectedMessagebox(`missing alias ( loadstring ) - unsupported executor`, `[{executor}]`, 48);
+        return coreFoundation:protectedMessagebox(`missing alias ( loadstring ) - unsupported executor`, `[{executor}]`, 48);
     elseif (type(request) ~= "function") then
-        return protectedMessagebox(`missing alias ( request ) - unsupported executor`, `[{executor}]`, 48);
+        return coreFoundation:protectedMessagebox(`missing alias ( request ) - unsupported executor`, `[{executor}]`, 48);
     end
 
     function coreFoundation:protectedLoad(url, ...)
 
         if (type(url) ~= "string") then
             self:protectedMessagebox(`protectedLoad syntax error (1) - expected string type for url, got {type(url)}`, `[{executor}]`, 48);
-            task.wait(9e9);
-            return;
+            return task.wait(9e9);
         end
 
         local success, response = pcall(request, { Url = url, Method = "GET" });
         if (not success) then
             self:protectedMessagebox(`protectedLoad failed (1) - request error\n\nurl: {url}`, `[{executor}]`, 48);
-            task.wait(9e9);
-            return;
+            return task.wait(9e9);
         elseif (type(response.Body) ~= "string" or response.StatusCode ~= 200) then
             self:protectedMessagebox(`protectedLoad failed (2) - bad response\n\nurl: {url}`, `[{executor}]`, 48);
-            task.wait(9e9);
-            return;
+            return task.wait(9e9);
         end
 
         local loader = loadstring(response.Body);
         if (not loader) then
             self:protectedMessagebox(`protectedLoad failed (3) - syntax error\n\nurl: {url}`, `[{executor}]`, 48);
-            task.wait(9e9);
-            return;
+            return task.wait(9e9);
         end
 
         return loader(...);
     end
 end
 
+table.freeze(coreFoundation);
 return coreFoundation;
-
