@@ -1417,7 +1417,7 @@ do
 
 			Library.KeybindFrame.Size = UDim2.new(0, math.max(XSize + 10, 210), 0, YSize + 23)
 
-			Library.KeybindFrame.Visible = Library.KeypickerListVisible and (YSize ~= 0);
+			Library.KeybindFrame.Visible = false; --Library.KeypickerListVisible and (YSize ~= 0);
 		end;
 
 		function KeyPicker:OverrideState(v)
