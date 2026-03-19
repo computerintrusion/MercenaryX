@@ -7,6 +7,7 @@ do
     local loadstring = loadstring;
 
     coreFoundation.referenceCache = {};
+    coreFoundation.hookCache = {};
     coreFoundation.isKicked = false;
     
     function coreFoundation:getService(name)
@@ -23,24 +24,23 @@ do
         return reference;
     end
 
-    -- function coreFoundation:getServices(names)
-    --     if (type(names) ~= "table") then
-    --         warn(`getServices syntax error (1) - expected table type for names, got {type(names)}`)
-    --         return;
-    --     end
+    function coreFoundation:getServiceTable(names)
+        if (type(names) ~= "table") then
+            warn(`getServices syntax error (1) - expected table type for names, got {type(names)}`)
+            return;
+        end
 
-    --     local results = {};
-    --     local getService = self.getService;
+        local results = {};
+        local getService = self.getService;
 
-    --     for i = 1, #names do
-    --         results[i] = getService(self, names[i]);
-    --     end
+        for i = 1, #names do
+            results[i] = getService(self, names[i]);
+        end
 
-    --     return unpack(results);
-    -- end
+        return unpack(results);
+    end
 
     function coreFoundation:kickPlayer(reason)
-        
         if (self.isKicked) then
             return;
         end
@@ -57,7 +57,6 @@ do
     end
 
     function coreFoundation:protectedMessagebox(body, title, id)
-
         local success, output = pcall(messagebox, body, title, id);
         if (success) then
             return output;
@@ -73,7 +72,6 @@ do
     end
 
     function coreFoundation:protectedLoad(url, ...)
-
         if (type(url) ~= "string") then
             self:protectedMessagebox(`protectedLoad syntax error (1) - expected string type for url, got {type(url)}`, `[{executor}]`, 48);
             return task.wait(9e9);
@@ -96,6 +94,61 @@ do
 
         return loader(...);
     end
+
+    -- TODO: hook library: 
+    -- verify hookfunction, isfunctionhooked, restorefunction
+    -- add safety checks to make sure we are passing correct parameters
+    -- too lazy to do any of this rn..
+    function coreFoundation:registerHook(hookName, hookData)
+        if (self.hookCache[hookName]) then
+            return self.hookCache[hookName].originalFunction;
+        end
+
+        local originalFunction;
+
+        local function wrappedReplacement(...)
+            return hookData.replacement(originalFunction, ...)
+        end
+
+        originalFunction = hookfunction(hookData.target, wrappedReplacement);
+
+        self.hookCache[hookName] = {
+            originalFunction = originalFunction,
+            targetFunction = hookData.target,
+            replacementFunction = hookData.replacement
+        };
+
+        return originalFunction;
+    end
+
+    function coreFoundation:restoreHook(hookName)
+        local hookInfo = self.hookCache[hookName];
+        if (not hookInfo) then
+            return false;
+        end
+
+        if (restorefunction) then
+            restorefunction(hookInfo.targetFunction);
+            self.hookCache[hookName] = nil;
+            return true;
+        end
+
+        return false;
+    end
+
+    function coreFoundation:restoreAllHooks()
+        for _, hookInfo in pairs(self.hookCache) do
+            if (restorefunction) then
+                restorefunction(hookInfo.targetFunction);
+            end
+        end
+        table.clear(self.hookCache);
+    end
+
+    function coreFoundation:getHookCache()
+        return self.hookCache;
+    end
+
 end
 
 table.freeze(coreFoundation);
