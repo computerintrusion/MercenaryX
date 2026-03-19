@@ -1,5 +1,25 @@
 local coreFoundation = {};
 
+-- check executor support
+do
+    local requiredFunctions = {
+        "cloneref", "clonefunction", "getgenv",
+        "getrenv", "hookfunction", "hookmetamethod",
+        "identifyexecutor", "isfunctionhooked", "isexecutorclosure",
+        "islclosure", "iscclosure", "loadstring",
+        "messagebox", "newcclosure", "request",
+        "restorefunction"
+    };
+
+    for _, name in ipairs(requiredFunctions) do
+        if (rawget(getgenv(), name) == nil) then
+            local message = `Exploit is not supported. Missing function: {name}`;
+            return warn(`[CoreFoundation - Critical Error] {message}`);
+        end
+    end
+end
+
+-- init basic functions
 do
     local executor = identifyexecutor and identifyexecutor() or "unknown executor";
     local messagebox = messageboxasync or messagebox;
@@ -7,7 +27,6 @@ do
     local loadstring = loadstring;
 
     coreFoundation.referenceCache = {};
-    coreFoundation.hookCache = {};
     coreFoundation.isKicked = false;
     
     function coreFoundation:getService(name)
@@ -94,12 +113,30 @@ do
 
         return loader(...);
     end
+end
 
-    -- TODO: hook library: 
-    -- verify hookfunction, isfunctionhooked, restorefunction
-    -- add safety checks to make sure we are passing correct parameters
-    -- too lazy to do any of this rn..
+
+-- init hook functions
+do
+    coreFoundation.hookCache = {};
+
     function coreFoundation:registerHook(hookName, hookData)
+        if (type(hookName) ~= "string" or hookName == "") then
+            return warn(`registerHook syntax error (1) - expected string for hookName, got {type(hookName)}`);
+        elseif (type(hookData) ~= "table") then
+            return warn(`registerHook syntax error (3) - expected table for hookData, got {type(hookData)}`);
+        elseif (hookData.target == nil or type(hookData.target) ~= "function") then
+            return warn(`registerHook syntax error (4) - expected function for target, got {type(hookData.target)}`);
+        elseif (hookData.replacement == nil or type(hookData.replacement) ~= "function") then
+            return warn(`registerHook syntax error (5) - expected function for replacement, got {type(hookData.replacement)}`);
+        elseif (hookData.target and hookData.replacement) then
+            for key in pairs(hookData) do
+                if (key ~= "target" and key ~= "replacement") then
+                    return warn(`registerHook syntax error (6) - invalid key in hookData: {tostring(key)}`);
+                end
+            end
+        end
+
         if (self.hookCache[hookName]) then
             return self.hookCache[hookName].originalFunction;
         end
@@ -122,12 +159,16 @@ do
     end
 
     function coreFoundation:restoreHook(hookName)
+        if (type(hookName) ~= "string" or hookName == "") then
+            return warn(`restoreHook syntax error (1) - expected string for hookName, got {type(hookName)}`);
+        end
+
         local hookInfo = self.hookCache[hookName];
         if (not hookInfo) then
             return false;
         end
 
-        if (restorefunction) then
+        if (isfunctionhooked(hookName)) then
             restorefunction(hookInfo.targetFunction);
             self.hookCache[hookName] = nil;
             return true;
@@ -138,9 +179,7 @@ do
 
     function coreFoundation:restoreAllHooks()
         for _, hookInfo in pairs(self.hookCache) do
-            if (restorefunction) then
-                restorefunction(hookInfo.targetFunction);
-            end
+            restorefunction(hookInfo.targetFunction);
         end
         table.clear(self.hookCache);
     end
