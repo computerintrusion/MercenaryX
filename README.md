@@ -2,4 +2,5 @@
 
 The official repository for Mercenary X
 
-- if you would like to purchase the private hub message me on Telegram @computerintrusion
+MercenaryKit (custom module framework) source code:
+    https://github.com/computerintrusion/MercenaryKit
